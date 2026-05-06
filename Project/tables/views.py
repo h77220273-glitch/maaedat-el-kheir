@@ -47,7 +47,7 @@ def edittable(id):
             return redirect('/auth/myaccount')
         
         return render_template('khair.html',table=table,form=form)
-    
+@login_required    
 @bp.route('/delete/<int:id>')
 def deletetable(id):
     table = Tables.query.get(id)
