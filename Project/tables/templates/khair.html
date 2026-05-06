@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تعديل المائدة</title>
+    <link rel="stylesheet" href="../../static/style/normalize.css" />
+    <link rel="stylesheet" href="../../static/style/all.min.css" />
+    <link rel="stylesheet" href="../../static/style/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Cairo:wght@200..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Young+Serif&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+    <style>
+
+
+.map-container{
+  width:100%;
+  max-width:1000px;
+  margin:auto;
+  padding:15px;
+  height: 500px;
+  border-radius:15px;
+}
+.modal {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  margin: 0 auto;
+  z-index:999;
+}
+.modal-box{
+  border: 1px solid #ebcb28;
+}
+
+.modal-box h2 {
+  margin-bottom: 10px;
+  color: #ffd369;
+  padding: 20px;
+  font-size: 2rem;
+}
+
+.modal-box p {
+  margin: 20px 0;
+  line-height: 1.7;
+}
+
+.modal-box strong {
+  color: #1dd4c8;
+}
+
+.modal-box button {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 8px 15px;
+  border: none;
+  background: #ffd369;
+  color: black;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.modal-box {
+  background:#1e2a4a;
+  color:white;
+  padding:20px;
+  border-radius:15px;
+  width:300px;
+  text-align:center;
+}
+
+.modal.show {
+  display:flex;
+}
+
+
+#map{
+  height:500px; /* مهم جدًا */
+  border-radius:10px;
+}
+</style>
+  <body dir="rtl">
+    <header>
+      <div class="container">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul class="nav" id="nav">
+          <li><a href="/">الرئيسية</a></li>
+          {% if current_user.is_authenticated %}
+          <li><a href="/tables/add">اضافة مائدة</a></li>
+          <li><a class="active" href="/auth/myaccount">حسابي</a></li>
+          {% else %}
+          <li><a href="/auth/login">تسجيل الدخول</a></li>
+          {% endif %}
+        </ul>
+        <div class="logo">
+          <h2>خريطة الخير</h2>
+          <img src="../../static/images/location.png" alt="" />
+        </div>
+      </div>
+    </header>
+    <div class="landing-text">
+      <h1>تعديل مائدة الخير</h1>
+      <p>شارك فى نشر الخير وساعد الاخرين فى ايجاد موائد الأفطار</p>
+    </div>
+    <form class="addForm" method="POST">
+      {{form.hidden_tag()}}
+      <div class="container">
+        <div class="name">
+          {{form.name.label()}}{{form.name(value=table.name,placeholder=" مائدة الرحمة"
+            ,id="name"
+            ,type="text")}}
+        </div>
+        <div class="description">
+          
+          {{form.description.label()}}<textarea name="description" id="des" class="description" 
+          placeholder="وصف مختصر عن المائدة والخدمات المقدمة">{{ table.desc }}</textarea>
+          
+            
+          
+          
+        </div>
+        <div class="locate">
+          <label for="loc">العنوان</label>
+          <input
+            value="{{table.loc}}"
+            name="location"
+            placeholder="الشارع,المدينة"
+            id="loc"
+            type="text",name='location'
+          />
+          <svg
+            width="20"
+            height="26"
+            viewBox="0 0 20 26"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.90476 0C15.3752 0 19.8095 4.38476 19.8095 9.79352C19.8095 9.90781 19.8072 10.0221 19.8027 10.1387C19.6808 13.3752 17.8712 17.0149 14.9013 20.7055C13.4881 22.4545 11.9375 24.0879 10.2644 25.5901L9.90476 25.9048L9.54514 25.5901L9.11314 25.1985C7.6039 23.805 6.19827 22.3034 4.90743 20.7055C1.93829 17.0149 0.128762 13.3752 0.00685692 10.1379C0.0024148 10.0234 0.000128911 9.90886 0 9.79429C0 4.45943 4.3139 0.121143 9.68076 0.00380945L9.90476 0ZM9.90476 2.15924C5.59314 2.15924 2.12267 5.59162 2.12267 9.79352C2.12267 9.87962 2.12419 9.96724 2.12724 10.0556C2.22552 12.6408 3.7379 15.8423 6.55086 19.3371C7.45015 20.4512 8.40901 21.5159 9.42324 22.5265L9.90476 22.9989L10.3863 22.5265C11.4005 21.5159 12.3594 20.4512 13.2587 19.3371C16.0716 15.8423 17.584 12.64 17.6823 10.0556C17.6853 9.96724 17.6869 9.88038 17.6869 9.79352C17.6869 5.59162 14.2164 2.15924 9.90476 2.15924ZM9.90476 4.67886C12.64 4.67886 14.8571 6.9341 14.8571 9.71733C14.8571 12.4998 12.64 14.7558 9.90476 14.7558C7.16952 14.7558 4.95238 12.5006 4.95238 9.71733C4.95238 6.93486 7.16952 4.67886 9.90476 4.67886ZM9.90476 6.8381C8.3421 6.8381 7.07505 8.12724 7.07505 9.71733C7.07505 11.3074 8.3421 12.5966 9.90476 12.5966C11.4674 12.5966 12.7345 11.3074 12.7345 9.71733C12.7345 8.12724 11.4674 6.8381 9.90476 6.8381Z"
+              fill="#33CCBC"
+            />
+          </svg>
+        </div>
+        <div class="assign-location">
+          <h3>تحديد الموقع على الخريطة</h3>
+   <div class="map-container">
+  <div id="map"></div>
+</div>
+<input type="hidden" id="lat" name="lat" value="{{table.lat}}">
+<input type="hidden" id="lng" name="lng" value="{{table.lng}}">
+
+        </div>
+            <div id="modal" class="modal">
+  <div class="modal-box">
+    <h2 id="m-name"></h2>
+    <p id="m-desc"></p>
+    <p id="m-distance"></p>
+
+    <button onclick="closeModal()">إغلاق</button>
+  </div>
+</div>
+        <div class="save">
+          <button type="submit" id="submit" name="submit" value="حفظ التعديلات">حفظ التعديلات</button>
+        </div>
+      </div>
+    </form>
+    <footer>
+      <div class="container">
+        <div class="copy">
+          <i class="fa-regular fa-copyright"></i>
+          <p>2026 خريطة الخير .</p>
+          <p>جميع الحقوق محفوظة</p>
+        </div>
+        <div class="hilal">
+          <p>نشر الخير فى رمضان</p>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.66433 1.74402C9.80833 2.28002 9.88833 2.84802 9.88833 3.43202C9.88833 7.00002 7.00033 9.88802 3.43233 9.88802C2.84833 9.88802 2.28033 9.80802 1.73633 9.66402C2.48033 12.408 4.98433 14.432 7.96833 14.432C11.5363 14.432 14.4243 11.544 14.4243 7.97602C14.4243 4.99202 12.4083 2.48802 9.66433 1.74402Z"
+              fill="#EBCB28"
+            />
+          </svg>
+        </div>
+      </div>
+    </footer>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map('map').setView([{{table.lat|tojson}}, {{table.lng|tojson}}], 13);
+
+// Tile
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'© OpenStreetMap'
+}).addTo(map);
+
+let pinMode = false;
+let activeMarker = null;
+
+// Add toggle button above map
+const pinBtn = document.createElement("button");
+pinBtn.type = "button";
+pinBtn.id = "pinBtn";
+pinBtn.innerText = "تفعيل وضع التثبيت";
+pinBtn.style.margin = "10px";
+document.querySelector(".assign-location").prepend(pinBtn);
+
+pinBtn.addEventListener("click", () => {
+  pinMode = !pinMode;
+  pinBtn.innerText = pinMode ? "إلغاء وضع التثبيت" : "تفعيل وضع التثبيت";
+});
+
+// If table already has coordinates, show marker
+if ({{table.lat|tojson}} && {{table.lng|tojson}}) {
+  activeMarker = L.marker([{{table.lat|tojson}}, {{table.lng|tojson}}], {draggable:true}).addTo(map);
+
+  activeMarker.on("dragend", function(ev) {
+    const pos = ev.target.getLatLng();
+    document.getElementById("lat").value = pos.lat;
+    document.getElementById("lng").value = pos.lng;
+  });
+}
+
+// Drop or remove pin
+map.on("click", function(e) {
+  if (!pinMode) return;
+
+  if (activeMarker) {
+    map.removeLayer(activeMarker);
+    activeMarker = null;
+    document.getElementById("lat").value = "";
+    document.getElementById("lng").value = "";
+  } else {
+    activeMarker = L.marker(e.latlng, {draggable:true}).addTo(map);
+
+    document.getElementById("lat").value = e.latlng.lat;
+    document.getElementById("lng").value = e.latlng.lng;
+
+    activeMarker.on("dragend", function(ev) {
+      const pos = ev.target.getLatLng();
+      document.getElementById("lat").value = pos.lat;
+      document.getElementById("lng").value = pos.lng;
+    });
+
+    activeMarker.on("click", () => {
+      map.removeLayer(activeMarker);
+      activeMarker = null;
+      document.getElementById("lat").value = "";
+      document.getElementById("lng").value = "";
+    });
+  }
+});
+
+// ====== CLOSE MODAL ======
+function closeModal() {
+  document.getElementById("modal").classList.remove("show");
+}
+
+document.getElementById("modal").addEventListener("click", function(e){
+  if(e.target.id === "modal"){
+    closeModal();
+  }
+});
+</script>

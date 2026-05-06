@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تسجيل الدخول</title>
+    <link rel="stylesheet" href="../../static/style/normalize.css" />
+    <link rel="stylesheet" href="../../static/style/all.min.css" />
+    <link rel="stylesheet" href="../../static/style/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Cairo:wght@200..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Young+Serif&display=swap"
+      rel="stylesheet"
+    />
+  <style>
+.alert {
+  padding: 20px;
+  background-color: #5b5bdf;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+  </style>
+  </head>
+
+  <body dir="rtl">
+    <header>
+      <div class="container">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul class="nav" id="nav">
+          <li><a href="/index.html">الرئيسية</a></li>
+          <li><a href="/add.html">اضافة مائدة</a></li>
+          <li><a href="account.html">حسابي</a></li>
+          <li><a class="active" href="login.html">تسجيل الدخول</a></li>
+        </ul>
+        <div class="logo">
+          <h2>خريطة الخير</h2>
+          <img src="../../static/images/location.png" alt="" />
+        </div>
+      </div>
+    </header>
+    <div class="landing-text">
+      <h1>تسجيل الدخول</h1>
+      <p>اهلا بك مرة اخرى فى خريطة الخير</p>
+    </div>
+    {% if get_flashed_messages(category_filter='Info') %}
+    <div class="alert">
+  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+  <p style="text-align: center;">{{get_flashed_messages(category_filter='Info')[0] }}</p>
+  </div>
+    {% endif %}
+    <form class="login" method="POST">
+      {{form.hidden_tag()}}
+      <div class="container">
+        <div class="email">
+          {{form.email.label()}}
+          {{form.email(required=True ,placeholder="zeyadeladl7@example.com", id="name" ,type="text")}}
+        </div>
+        <div class="password">
+          {{form.password.label()}}
+          {{form.password(required=True ,id="pass" ,type="password",placeholder='كلمة السر')}}
+        </div>
+        <div class="login">
+          <button type="submit" name="submit"> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 12C4 12.2652 4.10536 12.5196 4.29289 12.7071C4.48043 12.8946 4.73478 13 5 13H12.59L10.29 15.29C10.1963 15.383 10.1219 15.4936 10.0711 15.6154C10.0203 15.7373 9.9942 15.868 9.9942 16C9.9942 16.132 10.0203 16.2627 10.0711 16.3846C10.1219 16.5064 10.1963 16.617 10.29 16.71C10.383 16.8037 10.4936 16.8781 10.6154 16.9289C10.7373 16.9797 10.868 17.0058 11 17.0058C11.132 17.0058 11.2627 16.9797 11.3846 16.9289C11.5064 16.8781 11.617 16.8037 11.71 16.71L15.71 12.71C15.801 12.6149 15.8724 12.5027 15.92 12.38C16.02 12.1365 16.02 11.8635 15.92 11.62C15.8724 11.4972 15.801 11.3851 15.71 11.29L11.71 7.29C11.6168 7.19676 11.5061 7.1228 11.3842 7.07234C11.2624 7.02188 11.1319 6.99591 11 6.99591C10.7337 6.99591 10.4783 7.1017 10.29 7.29C10.1968 7.38324 10.1228 7.49393 10.0723 7.61575C10.0219 7.73757 9.99591 7.86814 9.99591 8C9.99591 8.2663 10.1017 8.5217 10.29 8.71L12.59 11H5C4.73478 11 4.48043 11.1054 4.29289 11.2929C4.10536 11.4804 4 11.7348 4 12ZM17 2H7C6.20435 2 5.44129 2.31607 4.87868 2.87868C4.31607 3.44129 4 4.20435 4 5V8C4.00004 8.26519 4.10542 8.5195 4.29295 8.70701C4.48048 8.89451 4.73481 8.99985 5 8.99985C5.26519 8.99985 5.51952 8.89451 5.70705 8.70701C5.89458 8.5195 5.99996 8.26519 6 8V5C6 4.73478 6.10536 4.48043 6.29289 4.29289C6.48043 4.10536 6.73478 4 7 4H17C17.2652 4 17.5196 4.10536 17.7071 4.29289C17.8946 4.48043 18 4.73478 18 5V19C18 19.2652 17.8946 19.5196 17.7071 19.7071C17.5196 19.8946 17.2652 20 17 20H7C6.73478 20 6.48043 19.8946 6.29289 19.7071C6.10536 19.5196 6 19.2652 6 19V16C5.99996 15.7348 5.89458 15.4805 5.70705 15.293C5.51952 15.1055 5.26519 15.0002 5 15.0002C4.73481 15.0002 4.48048 15.1055 4.29295 15.293C4.10542 15.4805 4.00004 15.7348 4 16V19C4 19.7956 4.31607 20.5587 4.87868 21.1213C5.44129 21.6839 6.20435 22 7 22H17C17.7956 22 18.5587 21.6839 19.1213 21.1213C19.6839 20.5587 20 19.7956 20 19V5C20 4.20435 19.6839 3.44129 19.1213 2.87868C18.5587 2.31607 17.7956 2 17 2Z" fill="white"/>
+</svg>
+تسجيل الدخول</button>
+
+        </div>
+        <div class="ask">
+          <a href="create.html">ليس لديك حساب؟ انشاء حساب جديد</a>
+        </div>
+      </div>
+    </form>
+        <footer>
+      <div class="container">
+        <div class="copy">
+          <i class="fa-regular fa-copyright"></i>
+          <p>2026 خريطة الخير .</p>
+          <p>جميع الحقوق محفوظة</p>
+        </div>
+        <div class="hilal">
+          <p>نشر الخير فى رمضان</p>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.66433 1.74402C9.80833 2.28002 9.88833 2.84802 9.88833 3.43202C9.88833 7.00002 7.00033 9.88802 3.43233 9.88802C2.84833 9.88802 2.28033 9.80802 1.73633 9.66402C2.48033 12.408 4.98433 14.432 7.96833 14.432C11.5363 14.432 14.4243 11.544 14.4243 7.97602C14.4243 4.99202 12.4083 2.48802 9.66433 1.74402Z"
+              fill="#EBCB28"
+            />
+          </svg>
+        </div>
+      </div>
+    </footer>
+  </body>
+  <script src="../../static/scripts/main.js"></script>
+</html>

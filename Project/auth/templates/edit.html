@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>خريطة الخير</title>
+    <link rel="stylesheet" href="../../static/style/normalize.css" />
+    <link rel="stylesheet" href="../../static/style/all.min.css" />
+    <link rel="stylesheet" href="../../static/style/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Cairo:wght@200..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Young+Serif&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body dir="rtl">
+    <header>
+      <div class="container">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul class="nav" id="nav">
+          {% if current_user.is_authenticated %}
+          <li><a href="/">الرئيسية</a></li>
+          <li><a href="/tables/addtable">اضافة مائدة</a></li>
+          <li><a class="active" href="/auth/myaccount">حسابي</a></li>
+          {% else %}
+          <li><a href="/auth/login">تسجيل الدخول</a></li>
+          {% endif %}
+        </ul>
+        <div class="logo">
+          <h2>خريطة الخير</h2>
+          <img src="../../static/images/location.png" alt="" />
+        </div>
+      </div>
+    </header>
+    <div class="landing-text">
+      <h1>تعديل البيانات</h1>
+    </div>
+    <form class="editForm" method="POST" enctype="multipart/form-data">
+      {{form.hidden_tag()}}
+      <div class="container">
+        <div class="image-edit">
+          <label class="upload-icon">
+            {{form.image(accept="image/*" ,hidden=True)}}
+            <img id="preview" src="" alt="" />
+            <svg
+              width="93"
+              height="89"
+              viewBox="0 0 93 89"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                width="93"
+                height="89"
+                rx="44.5"
+                fill="#A39E9E"
+                fill-opacity="0.33"
+              />
+              <path
+                d="M50.3337 48.9083V52.9333C44.392 50.825 37.6837 53.8917 35.5753 60.025C35.192 60.9833 35.0003 62.325 35.0003 63.6667H31.167C31.167 55.2333 38.067 48.3333 46.5003 48.3333C47.842 48.3333 48.992 48.525 50.3337 48.9083ZM46.5003 46.4167C40.1753 46.4167 35.0003 41.2417 35.0003 34.9167C35.0003 28.5917 40.1753 23.4167 46.5003 23.4167C52.8253 23.4167 58.0003 28.5917 58.0003 34.9167C58.0003 41.2417 52.8253 46.4167 46.5003 46.4167ZM46.5003 42.5833C50.717 42.5833 54.167 39.1333 54.167 34.9167C54.167 30.7 50.717 27.25 46.5003 27.25C42.2837 27.25 38.8337 30.7 38.8337 34.9167C38.8337 39.1333 42.2837 42.5833 46.5003 42.5833ZM58.0003 54.0833V48.3333H61.8337V54.0833H67.5837V57.9167H61.8337V63.6667H58.0003V57.9167H52.2503V54.0833H58.0003Z"
+                fill="#1DD4C8"
+              />
+            </svg>
+          </label>
+          <p>تعديل الصورة</p>
+        </div>
+        <div class="name">
+          <label for="name">الاسم</label>
+          {{form.name(required=True , placeholder="الاسم كامل" ,id="name" )}}
+        </div>
+        <div class="email">
+          <label for="name">البريد الالكترونى</label>
+          {{form.email(required=True ,placeholder="zeyadeladl7@example.com" ,id="name")}}
+        </div>
+        <div class="save">
+        
+          <button type="submit" name="submit">حفظ التعديلات</button>
+        </div>
+      </div>
+    </form>
+  </body>
+  <script src="scripts/main.js"></script>
+</html>

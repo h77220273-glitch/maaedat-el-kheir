@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>خريطة الخير</title>
+    <link rel="stylesheet" href="../../static/style/normalize.css" />
+    <link rel="stylesheet" href="../../static/style/all.min.css" />
+    <link rel="stylesheet" href="../../static/style/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Cairo:wght@200..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Young+Serif&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+
+
+/* البوكس */
+.map-container{
+  width:100%;
+  max-width:1000px;
+  margin:auto;
+  padding:15px;
+  height: 500px;
+  border-radius:15px;
+}
+.modal {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  margin: 0 auto;
+  z-index:999;
+}
+.modal-box{
+  border: 1px solid #ebcb28;
+}
+
+.modal-box h2 {
+  margin-bottom: 10px;
+  color: #ffd369;
+  padding: 20px;
+  font-size: 2rem;
+}
+
+.modal-box p {
+  margin: 20px 0;
+  line-height: 1.7;
+}
+
+.modal-box strong {
+  color: #1dd4c8;
+}
+
+.modal-box button {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 8px 15px;
+  border: none;
+  background: #ffd369;
+  color: black;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.modal-box {
+  background:#1e2a4a;
+  color:white;
+  padding:20px;
+  border-radius:15px;
+  width:300px;
+  text-align:center;
+}
+
+.modal.show {
+  display:flex;
+}
+
+
+#map{
+  height:500px; /* مهم جدًا */
+  border-radius:10px;
+}
+</style>
+  <body dir="rtl">
+    <header>
+      <div class="container">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul class="nav" id="nav">
+          <li><a class="active" href="/">الرئيسية</a></li>
+          {% if current_user.is_authenticated %}
+          <li><a href="/auth/myaccount">حسابي</a></li>
+          <li><a href="/tables/addtable">اضافة مائدة</a></li>
+          {% else %}
+          <li><a href="/auth/login">تسجيل الدخول</a></li>
+          {% endif %}
+        </ul>
+        <div class="logo">
+          <h2>خريطة الخير</h2>
+          <img src="../../static/images/location.png" alt="" />
+        </div>
+      </div>
+    </header>
+    <section class="landing">
+      <div class="container">
+        <div class="text">
+          <h1>خريطة الخير</h1>
+          <p>دليلك لأقرب موائد الرحمن فى رمضان</p>
+        </div>
+        <div class="buttons">
+          <div class="right">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16.0005 3.04761C21.4709 3.04761 25.9052 7.43237 25.9052 12.8411C25.9052 12.9554 25.9029 13.0697 25.8984 13.1863C25.7765 16.4228 23.9669 20.0625 20.997 23.7531C19.5838 25.5021 18.0332 27.1355 16.3601 28.6377L16.0005 28.9524L15.6408 28.6377L15.2088 28.2461C13.6996 26.8526 12.294 25.351 11.0031 23.7531C8.03399 20.0625 6.22446 16.4228 6.10256 13.1855C6.09812 13.071 6.09583 12.9565 6.0957 12.8419C6.0957 7.50704 10.4096 3.16875 15.7765 3.05142L16.0005 3.04761ZM16.0005 5.20685C11.6888 5.20685 8.21837 8.63923 8.21837 12.8411C8.21837 12.9272 8.21989 13.0148 8.22294 13.1032C8.32123 15.6884 9.83361 18.8899 12.6466 22.3848C13.5458 23.4988 14.5047 24.5635 15.5189 25.5741L16.0005 26.0465L16.482 25.5741C17.4962 24.5635 18.4551 23.4988 19.3544 22.3848C22.1673 18.8899 23.6797 15.6876 23.778 13.1032C23.781 13.0148 23.7826 12.928 23.7826 12.8411C23.7826 8.63923 20.3121 5.20685 16.0005 5.20685ZM16.0005 7.72646C18.7357 7.72646 20.9528 9.9817 20.9528 12.7649C20.9528 15.5474 18.7357 17.8034 16.0005 17.8034C13.2652 17.8034 11.0481 15.5482 11.0481 12.7649C11.0481 9.98246 13.2652 7.72646 16.0005 7.72646ZM16.0005 9.8857C14.4378 9.8857 13.1708 11.1748 13.1708 12.7649C13.1708 14.355 14.4378 15.6442 16.0005 15.6442C17.5631 15.6442 18.8302 14.355 18.8302 12.7649C18.8302 11.1748 17.5631 9.8857 16.0005 9.8857Z"
+                fill="white"
+              />
+            </svg>
+            <a href="#scroll">اعثر على اقرب مائدة</a>
+          </div>
+          <div class="left">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M13.001 4.00049V10.9995H20V13.0005H13.001V19.9995H11V13.0005H4.00098V10.9995H11V4.00049H13.001Z"
+                fill="black"
+              />
+            </svg>
+            <a href="/tables/addtable">اضف مائدة جديدة</a>
+          </div>
+        </div>
+      </div>
+    </section>
+ <section id="scroll" class="location">
+  <h2>اكتشف اقرب مائدة</h2>
+   <div class="map-container">
+  <div id="map"></div>
+</div>
+
+    </section>   
+    <div id="modal" class="modal">
+  <div class="modal-box">
+    <h2 id="m-name"></h2>
+    <p id="m-desc"></p>
+    <p id="m-distance"></p>
+
+    <button onclick="closeModal()">إغلاق</button>
+  </div>
+</div>
+    <div class="star">
+      <div class="container">
+        <div class="icon">
+          <svg
+            width="18"
+            height="16"
+            viewBox="0 0 18 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8.55957 0L10.5802 5.87336L17.1191 5.87336L11.829 9.50329L13.8496 15.3766L8.55957 11.7467L3.2695 15.3766L5.29013 9.50329L6.19888e-05 5.87336L6.53894 5.87336L8.55957 0Z"
+              fill="#D9D9D9"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="container">
+        <div class="copy">
+          <i class="fa-regular fa-copyright"></i>
+          <p>2026 خريطة الخير .</p>
+          <p>جميع الحقوق محفوظة</p>
+        </div>
+        <div class="hilal">
+          <p>نشر الخير فى رمضان</p>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.66433 1.74402C9.80833 2.28002 9.88833 2.84802 9.88833 3.43202C9.88833 7.00002 7.00033 9.88802 3.43233 9.88802C2.84833 9.88802 2.28033 9.80802 1.73633 9.66402C2.48033 12.408 4.98433 14.432 7.96833 14.432C11.5363 14.432 14.4243 11.544 14.4243 7.97602C14.4243 4.99202 12.4083 2.48802 9.66433 1.74402Z"
+              fill="#EBCB28"
+            />
+          </svg>
+        </div>
+      </div>
+    </footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map('map').setView([30.0444,31.2357],13);
+
+// Tile
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'© OpenStreetMap'
+}).addTo(map);
+
+// Marker 1
+// ====== DATA ======
+const locations = {{tables|tojson|safe}}
+
+// ====== RENDER MARKERS ======
+locations.forEach((loc) => {
+  const marker = L.marker([loc.lat, loc.lng]).addTo(map);
+
+  marker.on("click", () => {
+    document.querySelector(".modal-box").innerHTML = `
+      <h2>${loc.name}</h2>
+      <p>${loc.desc}</p>
+      <button onclick="closeModal()">إغلاق</button>
+    `;
+    document.getElementById("modal").classList.add("show");
+  });
+});
+
+// ====== CLOSE MODAL ======
+function closeModal() {
+  document.getElementById("modal").classList.remove("show");
+}
+
+document.getElementById("modal").addEventListener("click", function(e){
+  if(e.target.id === "modal"){
+    closeModal();
+  }
+});
+</script>
+  </body>
+  <script src="scripts/main.js"></script>
+
+</html>
